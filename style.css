@@ -1,10 +1,13 @@
-body {
+:root {
   color-scheme: light dark;
+}
+
+body {
   margin: 0;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
   display: flex;
-  justify-align: center;
+  justify-content: center;
   align-items: center;
 }
