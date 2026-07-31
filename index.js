@@ -74,6 +74,36 @@ const methods = [
     )
     await lineTo(x13, y13)
   },
+  async function Hybrid(step, x1, y1, x2, y2, x3, y3) {
+    if (step == 0) return
+
+    const x12 = (x1 + x2) * 0.5, y12 = (y1 + y2) * 0.5
+    const x23 = (x2 + x3) * 0.5, y23 = (y2 + y3) * 0.5
+    const x13 = (x1 + x3) * 0.5, y13 = (y1 + y3) * 0.5
+
+    await recursive(
+      step - 1,
+      x1, y1,
+      x12, y12,
+      x13, y13
+    )
+    await lineTo(x13, y13)
+    await lineTo(x12, y12)
+    await recursive(
+      step - 1,
+      x12, y12,
+      x2, y2,
+      x23, y23
+    )
+    await lineTo(x23, y23)
+    await recursive(
+      step - 1,
+      x23, y23,
+      x3, y3,
+      x13, y13
+    )
+    await lineTo(x13, y13)
+  },
 ]
 
 async function sierpinski(
