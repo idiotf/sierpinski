@@ -94,21 +94,28 @@ async function sierpinski(
 const steps = 5
 const delay = 50
 
-ctx.strokeStyle = '#ff0000'
-ctx.lineWidth = 4
-ctx.lineCap = 'round'
-ctx.lineJoin = 'round'
+function initCtx() {
+  ctx.strokeStyle = '#ff0000'
+  ctx.lineWidth = 4
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
+}
+
+initCtx()
+canvas.addEventListener('contextrestored', initCtx)
 
 const sqrt3_2 = Math.sqrt(3) * 0.5
 
-for (;;) {
-  for (recursive of methods) {
-    await sierpinski(
-      steps,
-      400 - sqrt3_2 * 320, 600,
-      400, 120,
-      400 + sqrt3_2 * 320, 600
-    )
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+;(async () => {
+  for (;;) {
+    for (recursive of methods) {
+      await sierpinski(
+        steps,
+        400 - sqrt3_2 * 320, 600,
+        400, 120,
+        400 + sqrt3_2 * 320, 600
+      )
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+    }
   }
-}
+})()
