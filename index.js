@@ -131,9 +131,9 @@ const methods = [
       await lineTo(x2, y2)
       await lineTo(x3, y3)
     } else {
-      part1(step, x1, y1, x2, y2, x3, y3)
-      part2(step, x1, y1, x2, y2, x3, y3)
-      part3(step, x1, y1, x2, y2, x3, y3)
+      await part1(step, x1, y1, x2, y2, x3, y3)
+      await part2(step, x1, y1, x2, y2, x3, y3)
+      await part3(step, x1, y1, x2, y2, x3, y3)
     }
   },
 ]
