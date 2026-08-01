@@ -74,6 +74,68 @@ const methods = [
     )
     await lineTo(x13, y13)
   },
+  async function Snake(step, x1, y1, x2, y2, x3, y3) {
+    async function part1(step, x1, y1, x2, y2, x3, y3) {
+      const x12 = (x1 + x2) * 0.5, y12 = (y1 + y2) * 0.5
+      const x23 = (x2 + x3) * 0.5, y23 = (y2 + y3) * 0.5
+      const x13 = (x1 + x3) * 0.5, y13 = (y1 + y3) * 0.5
+
+      if (step == 1) {
+        await lineTo(x1, y1)
+        await lineTo(x13, y13)
+        await lineTo(x12, y12)
+        await lineTo(x2, y2)
+      } else {
+        await part1(step - 1, x1, y1, x12, y12, x13, y13)
+        await part1(step - 1, x12, y12, x2, y2, x23, y23)
+      }
+    }
+    async function part2(step, x1, y1, x2, y2, x3, y3) {
+      const x12 = (x1 + x2) * 0.5, y12 = (y1 + y2) * 0.5
+      const x23 = (x2 + x3) * 0.5, y23 = (y2 + y3) * 0.5
+      const x13 = (x1 + x3) * 0.5, y13 = (y1 + y3) * 0.5
+
+      if (step == 1) {
+        await lineTo(x2, y2)
+        await lineTo(x23, y23)
+        await lineTo(x13, y13)
+        await lineTo(x3, y3)
+      } else {
+        await part2(step - 1, x12, y12, x2, y2, x23, y23)
+        await part3(step - 1, x12, y12, x2, y2, x23, y23)
+        await part2(step - 1, x1, y1, x12, y12, x13, y13)
+        await part3(step - 1, x3, y3, x23, y23, x13, y13)
+      }
+    }
+    async function part3(step, x1, y1, x2, y2, x3, y3) {
+      const x12 = (x1 + x2) * 0.5, y12 = (y1 + y2) * 0.5
+      const x23 = (x2 + x3) * 0.5, y23 = (y2 + y3) * 0.5
+      const x13 = (x1 + x3) * 0.5, y13 = (y1 + y3) * 0.5
+
+      if (step == 1) {
+        await lineTo(x3, y3)
+        await lineTo(x23, y23)
+        await lineTo(x12, y12)
+        await lineTo(x1, y1)
+      } else {
+        await part1(step - 1, x3, y3, x23, y23, x13, y13)
+        await part2(step - 1, x3, y3, x23, y23, x13, y13)
+        await part3(step - 1, x1, y1, x12, y12, x13, y13)
+      }
+    }
+
+    ctx.beginPath()
+    ctx.moveTo(x1, y1)
+
+    if (step == 0) {
+      await lineTo(x2, y2)
+      await lineTo(x3, y3)
+    } else {
+      part1(step, x1, y1, x2, y2, x3, y3)
+      part2(step, x1, y1, x2, y2, x3, y3)
+      part3(step, x1, y1, x2, y2, x3, y3)
+    }
+  },
 ]
 
 async function sierpinski(
