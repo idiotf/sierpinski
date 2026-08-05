@@ -1,13 +1,20 @@
 const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
 
+let path = new Path2D()
+
 function update() {
+  ctx.strokeStyle = '#ff0000'
+  ctx.lineWidth = 4
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
+
   ctx.clearRect(0, 0, canvas.width, canvas.height)
-  ctx.stroke()
+  ctx.stroke(path)
 }
 
 async function lineTo(x, y) {
-  ctx.lineTo(x, y)
+  path.lineTo(x, y)
   update()
   await new Promise(resolve => setTimeout(resolve, delay))
 }
@@ -192,31 +199,22 @@ async function sierpinski(
   x2, y2,
   x3, y3
 ) {
-  ctx.beginPath()
   if (method.removeOuterLine) {
-    ctx.moveTo(x1, y1)
+    path.moveTo(x1, y1)
   } else {
-    ctx.moveTo(x3, y3)
-    ctx.lineTo(x2, y2)
+    path.moveTo(x3, y3)
+    path.lineTo(x2, y2)
     await lineTo(x1, y1)
   }
   await method.run(step, x1, y1, x2, y2, x3, y3)
-  ctx.closePath()
+  path.closePath()
   update()
 }
 
 const steps = 5
 const delay = 50
 
-function initCtx() {
-  ctx.strokeStyle = '#ff0000'
-  ctx.lineWidth = 4
-  ctx.lineCap = 'round'
-  ctx.lineJoin = 'round'
-}
-
-initCtx()
-canvas.addEventListener('contextrestored', initCtx)
+canvas.addEventListener('contextrestored', update)
 
 const sqrt3_2 = Math.sqrt(3) * 0.5
 
@@ -231,6 +229,7 @@ const sqrt3_2 = Math.sqrt(3) * 0.5
         400 + sqrt3_2 * 320, 600
       )
       await new Promise((resolve) => setTimeout(resolve, 1500))
+      path = new Path2D()
     }
   }
 })()
