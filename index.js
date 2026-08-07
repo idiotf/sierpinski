@@ -3,11 +3,21 @@ const ctx = canvas.getContext('2d')
 
 let path = new Path2D()
 
+const resizeObserver = new ResizeObserver(([entry]) => {
+  canvas.width = entry.devicePixelContentBoxSize[0].inlineSize
+  canvas.height = entry.devicePixelContentBoxSize[0].blockSize
+  update()
+})
+resizeObserver.observe(canvas, { box: 'device-pixel-content-box' })
+
 function update() {
   ctx.strokeStyle = '#ff0000'
   ctx.lineWidth = 4
   ctx.lineCap = 'round'
   ctx.lineJoin = 'round'
+
+  ctx.resetTransform()
+  ctx.scale(canvas.width / 800, canvas.height / 800)
 
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   ctx.stroke(path)
