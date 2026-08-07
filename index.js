@@ -190,6 +190,32 @@ const methods = [
       await back(step, x3, y3, x2, y2, x1, y1)
     },
   },
+  {
+    name: 'Sierpinski Knots',
+    reference: 'https://match.pmf.kg.ac.rs/electronic_versions/Match68/n2/match68n2_595-610.pdf',
+    removeOuterLine: true,
+    run: async function knots(step, x1, y1, x2, y2, x3, y3) {
+      async function arrowhead(step, x1, y1, x2, y2, x3, y3) {
+        if (step == 0) return
+
+        const x12 = (x1 + x2) * 0.5, y12 = (y1 + y2) * 0.5
+        const x23 = (x2 + x3) * 0.5, y23 = (y2 + y3) * 0.5
+        const x13 = (x1 + x3) * 0.5, y13 = (y1 + y3) * 0.5
+
+        await arrowhead(step - 1, x1, y1, x13, y13, x12, y12)
+        await lineTo(x12, y12)
+        await arrowhead(step - 1, x12, y12, x2, y2, x23, y23)
+        await lineTo(x23, y23)
+        await arrowhead(step - 1, x23, y23, x13, y13, x3, y3)
+      }
+
+      await arrowhead(step, x1, y1, x2, y2, x3, y3)
+      await lineTo(x3, y3)
+      await arrowhead(step, x3, y3, x1, y1, x2, y2)
+      await lineTo(x2, y2)
+      await arrowhead(step, x2, y2, x3, y3, x1, y1)
+    },
+  },
 ]
 
 async function sierpinski(
