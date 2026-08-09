@@ -2,14 +2,6 @@ const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
 
 let path = new Path2D()
-
-const resizeObserver = new ResizeObserver(([entry]) => {
-  canvas.width = entry.devicePixelContentBoxSize[0].inlineSize
-  canvas.height = entry.devicePixelContentBoxSize[0].blockSize
-  update()
-})
-resizeObserver.observe(canvas, { box: 'device-pixel-content-box' })
-
 function update(strokePath = path) {
   ctx.strokeStyle = '#ff0000'
   ctx.lineWidth = 4
@@ -280,7 +272,14 @@ const steps = 5
 const delay = 50
 const animate = searchParams.has('animate')
 
-canvas.addEventListener('contextrestored', update)
+canvas.addEventListener('contextrestored', () => update())
+
+const resizeObserver = new ResizeObserver(([entry]) => {
+  canvas.width = entry.devicePixelContentBoxSize[0].inlineSize
+  canvas.height = entry.devicePixelContentBoxSize[0].blockSize
+  update()
+})
+resizeObserver.observe(canvas, { box: 'device-pixel-content-box' })
 
 const sqrt3_2 = Math.sqrt(3) * 0.5
 
