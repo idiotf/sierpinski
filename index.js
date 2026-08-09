@@ -252,15 +252,16 @@ async function sierpinski(
   x2, y2,
   x3, y3
 ) {
-  let x, y
   if (method.removeOuterLine) {
-    path.moveTo((x = lastX = x1), (y = lastY = y1))
+    path.moveTo(x1, y1)
   } else {
-    path.moveTo((x = lastX = x3), (y = lastY = y3))
+    path.moveTo(x3, y3)
     path.lineTo(x2, y2)
     if (animate) path.lineTo(x1, y1)
     else await lineTo(x1, y1)
   }
+  lastX = x1
+  lastY = y1
   await method.run(step, x1, y1, x2, y2, x3, y3)
   if (animate) await lineTo(x, y)
   path.closePath()
