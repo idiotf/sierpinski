@@ -301,7 +301,7 @@ async function visualizeMethod(method) {
 
 ;(async () => {
   for (;;) {
-    if (algorithm && methods[algorithm].run) {
+    if (algorithm && methods[algorithm]?.run) {
       await visualizeMethod(methods[algorithm])
     } else {
       for (const method of methods) await visualizeMethod(method)
