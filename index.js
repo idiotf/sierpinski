@@ -21,7 +21,7 @@ async function lineTo(x, y) {
   lastX = x
   lastY = y
 
-  if (animated) {
+  if (animate) {
     const startTime = performance.now()
     let rAF = requestAnimationFrame(function frame(time) {
       rAF = requestAnimationFrame(frame)
