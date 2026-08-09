@@ -38,6 +38,7 @@ async function lineTo(x, y) {
 
     await new Promise(resolve => setTimeout(resolve, delay))
     cancelAnimationFrame(rAF)
+    path.lineTo(x, y)
   } else {
     path.lineTo(x, y)
     update()
