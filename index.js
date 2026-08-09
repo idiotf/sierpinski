@@ -2,15 +2,7 @@ const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
 
 let path = new Path2D()
-
-const resizeObserver = new ResizeObserver(([entry]) => {
-  canvas.width = entry.devicePixelContentBoxSize[0].inlineSize
-  canvas.height = entry.devicePixelContentBoxSize[0].blockSize
-  update()
-})
-resizeObserver.observe(canvas, { box: 'device-pixel-content-box' })
-
-function update() {
+function update(strokePath = path) {
   ctx.strokeStyle = '#ff0000'
   ctx.lineWidth = 4
   ctx.lineCap = 'round'
@@ -20,13 +12,38 @@ function update() {
   ctx.scale(canvas.width / 800, canvas.height / 800)
 
   ctx.clearRect(0, 0, 800, 800)
-  ctx.stroke(path)
+  ctx.stroke(strokePath)
 }
 
+let lastX, lastY
 async function lineTo(x, y) {
-  path.lineTo(x, y)
-  update()
-  await new Promise(resolve => setTimeout(resolve, delay))
+  const prevX = lastX, prevY = lastY
+  lastX = x
+  lastY = y
+
+  if (animate) {
+    const startTime = performance.now()
+    let rAF = requestAnimationFrame(function frame(time) {
+      rAF = requestAnimationFrame(frame)
+
+      const t = (time - startTime) / delay
+      if (t <= 0) return
+
+      const newPath = new Path2D(path)
+      if (t >= 1) newPath.lineTo(x, y)
+      else newPath.lineTo((1 - t) * prevX + t * x, (1 - t) * prevY + t * y)
+
+      update(newPath)
+    })
+
+    await new Promise(resolve => setTimeout(resolve, delay))
+    cancelAnimationFrame(rAF)
+    path.lineTo(x, y)
+  } else {
+    path.lineTo(x, y)
+    update()
+    await new Promise(resolve => setTimeout(resolve, delay))
+  }
 }
 
 const methods = [
@@ -235,22 +252,37 @@ async function sierpinski(
   x2, y2,
   x3, y3
 ) {
+  let x, y
   if (method.removeOuterLine) {
-    path.moveTo(x1, y1)
+    path.moveTo((x = x1), (y = y1))
   } else {
-    path.moveTo(x3, y3)
+    path.moveTo((x = x3), (y = y3))
     path.lineTo(x2, y2)
-    await lineTo(x1, y1)
+    if (animate) path.lineTo(x1, y1)
+    else await lineTo(x1, y1)
   }
+  lastX = x1
+  lastY = y1
   await method.run(step, x1, y1, x2, y2, x3, y3)
+  if (animate) await lineTo(x, y)
   path.closePath()
   update()
 }
 
+const searchParams = new URLSearchParams(location.search)
+
 const steps = 5
 const delay = 50
+const animate = searchParams.has('animate')
 
-canvas.addEventListener('contextrestored', update)
+canvas.addEventListener('contextrestored', () => update())
+
+const resizeObserver = new ResizeObserver(([entry]) => {
+  canvas.width = entry.devicePixelContentBoxSize[0].inlineSize
+  canvas.height = entry.devicePixelContentBoxSize[0].blockSize
+  update()
+})
+resizeObserver.observe(canvas, { box: 'device-pixel-content-box' })
 
 const sqrt3_2 = Math.sqrt(3) * 0.5
 
