@@ -273,6 +273,7 @@ const searchParams = new URLSearchParams(location.search)
 
 const steps = 5
 const delay = 50
+const algorithm = searchParams.get('algorithm')
 const animate = searchParams.has('animate')
 
 canvas.addEventListener('contextrestored', () => update())
@@ -286,18 +287,23 @@ resizeObserver.observe(canvas, { box: 'device-pixel-content-box' })
 
 const sqrt3_2 = Math.sqrt(3) * 0.5
 
+async function visualizeMethod(method) {
+  await sierpinski(
+    method,
+    steps,
+    400 - sqrt3_2 * 320, 600,
+    400, 120,
+    400 + sqrt3_2 * 320, 600
+  )
+  await new Promise((resolve) => setTimeout(resolve, 1500))
+  path = new Path2D()
+}
+
 ;(async () => {
   for (;;) {
-    for (const method of methods) {
-      await sierpinski(
-        method,
-        steps,
-        400 - sqrt3_2 * 320, 600,
-        400, 120,
-        400 + sqrt3_2 * 320, 600
-      )
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      path = new Path2D()
-    }
+    if (algorithm && methods[algorithm].run) {
+      await visualizeMethod(methods[algorithm])
+    } else {
+      for (const method of methods) await visualizeMethod(method)
   }
 })()
