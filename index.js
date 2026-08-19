@@ -285,6 +285,12 @@ const resizeObserver = new ResizeObserver(([entry]) => {
 })
 resizeObserver.observe(canvas, { box: 'device-pixel-content-box' })
 
+document.addEventListener('dblclick', () => {
+  document.documentElement.requestFullscreen()
+  navigator.wakeLock.request('screen')
+  screen.orientation.lock('portrait-primary')
+})
+
 const sqrt3_2 = Math.sqrt(3) * 0.5
 
 async function visualizeMethod(method) {
